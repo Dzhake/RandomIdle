@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomIdle", "RandomIdle.csproj", "{0B59B715-EC25-4D23-B4CE-0C2AED8F93D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomIdle", "RandomIdle.csproj", "{0B59B715-EC25-4D23-B4CE-0C2AED8F93D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monogame.ImGuiNet", "MonoGame.ImGuiNet\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj", "{F593F596-F1AA-4140-BE84-2DE67B4536AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0B59B715-EC25-4D23-B4CE-0C2AED8F93D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B59B715-EC25-4D23-B4CE-0C2AED8F93D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B59B715-EC25-4D23-B4CE-0C2AED8F93D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F593F596-F1AA-4140-BE84-2DE67B4536AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F593F596-F1AA-4140-BE84-2DE67B4536AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F593F596-F1AA-4140-BE84-2DE67B4536AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F593F596-F1AA-4140-BE84-2DE67B4536AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
