@@ -38,8 +38,6 @@ namespace RandomIdle
         {
             Window.AllowUserResizing = true;
             Window.Title = "Random Idle";
-
-            SDL.SDL_SetWindowPosition(Window.Handle, 0, 20);
             
             GuiRenderer = new ImGuiRenderer(this);
             io = ImGui.GetIO();
@@ -63,7 +61,9 @@ namespace RandomIdle
         protected override void Update(GameTime gameTime)
         {
             if (Settings.GetWindowType() == Settings.WindowType.Maximized)
+            {
                 SDL.SDL_MaximizeWindow(SDLWindow);
+            }
 
             base.Update(gameTime);
         }
