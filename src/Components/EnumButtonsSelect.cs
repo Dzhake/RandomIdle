@@ -11,7 +11,7 @@ namespace RandomIdle
         /// <param name="text">Text between buttons</param>
         /// <param name="leftCallback">Functions which is called when left arrow is pressed</param>
         /// <param name="rightCallback">Function which is called when right arrow is pressed</param>
-        public static void ButtonsSelector(string text,Action leftCallback, Action rightCallback)
+        public static void EnumButtonsSelector(string text,Action leftCallback, Action rightCallback)
         {
             if (ImGui.Button("<"))
                 leftCallback();

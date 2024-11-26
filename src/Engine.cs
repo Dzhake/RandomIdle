@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.ImGuiNet;
 using SDL2;
 
@@ -14,29 +13,34 @@ namespace RandomIdle
     /// </summary>
     public class Engine : Game
     {
-        public static Engine Instance;
         public static GraphicsDeviceManager graphics;
-        public static SpriteBatch _spriteBatch;
         public static ImGuiRenderer GuiRenderer;
-
+        public static Engine Instance;
+        
         public static IntPtr SDLWindow => Instance.Window.Handle;
         public static ImGuiIOPtr io;
         public static ImGuiViewportPtr viewport;
         public static ImGuiStylePtr style;
 
+        public static TimeSpan DeltaTime;
+        public static TimeSpan TotalTime;
+
+
         private static readonly string errorLogPath = AppContext.BaseDirectory + "error.txt";
 
         public Engine()
         {
-            Instance = this;
-            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            Instance = this;
             IsMouseVisible = true;
+            IsFixedTimeStep = false;
+            graphics = new(this);
         }
 
         protected override void Initialize()
         {
             Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += Window_ClientSizeChanged;
             Window.Title = "Random Idle";
             
             GuiRenderer = new ImGuiRenderer(this);
@@ -54,13 +58,18 @@ namespace RandomIdle
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
             GuiRenderer.RebuildFontAtlas();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (Settings.GetWindowType() == Settings.WindowType.Maximized)
+            DeltaTime = gameTime.ElapsedGameTime;
+            TotalTime = gameTime.TotalGameTime;
+
+            if (Settings.PauseOnFocusLoss && !IsActive)
+                return;
+
+            if (Settings.GetWindowType() == Settings.WindowMode.Maximized)
             {
                 SDL.SDL_MaximizeWindow(SDLWindow);
             }
@@ -70,6 +79,9 @@ namespace RandomIdle
 
         protected override void Draw(GameTime gameTime)
         {
+            if (Settings.PauseOnFocusLoss && !IsActive)
+                return;
+
             try
             {
                 GraphicsDevice.Clear(Color.Black);
@@ -90,6 +102,14 @@ namespace RandomIdle
                 Process.Start(psi);
                 Exit();
             }
+        }
+
+
+        private void Window_ClientSizeChanged(object? sender, EventArgs e)
+        {
+            var window = Window.ClientBounds;
+            Settings.WindowSize.X = window.Width;
+            Settings.WindowSize.Y = window.Height;
         }
     }
 }

@@ -1,55 +1,64 @@
 ﻿using ImGuiNET;
 using System.Numerics;
+using SDL2;
 
 namespace RandomIdle
 {
     public static class SettingsMenu
     {
-        private static EnumSelectable? windowTypeSelectable;
+        private static EnumSelectable? windowModeSelectable;
 
         public static void Initialize()
         {
-            windowTypeSelectable = new EnumSelectable(typeof(Settings.WindowType), (int)Settings.GetWindowType());
+            windowModeSelectable = new EnumSelectable(typeof(Settings.WindowMode), (int)Settings.GetWindowType());
         }
 
         public static void DrawSettingsMenu()
         {
             ImGui.SeparatorText("Video");
-            ImGui.SeparatorText("Window type");
+            ImGui.SeparatorText("Window mode");
 
-            int selectedWindowType = windowTypeSelectable!.Draw();
-            if (selectedWindowType != -1) Settings.SetWindowType((Settings.WindowType)selectedWindowType, Engine.graphics);
+            int selectedWindowMode = windowModeSelectable!.Draw();
+            if (selectedWindowMode != -1) Settings.SetWindowType((Settings.WindowMode)selectedWindowMode);
 
-            if (Settings.GetWindowType() == Settings.WindowType.Maximized)
+            Settings.WindowMode windowMode = Settings.GetWindowType();
+
+            if (windowMode == Settings.WindowMode.Maximized)
             {
-                ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
-                ImGui.Text("Warning: you may need to click \"maximize\" button for change to take effect");
-                ImGui.PopStyleColor();
+                ImGui.TextColored(Colors.Yellow, 
+                    "You may need to click \"maximize\" top bar button or drag window a bit for change to take effect");
             }
+
 
             ImGui.SeparatorText("Window size");
-            ImGui.InputFloat2("Window size/resolution", ref Settings.WindowSize);
+
+            if (windowMode != Settings.WindowMode.Windowed)
+            {
+                ImGui.BeginDisabled();
+                ImGui.Text("You can change window size only in windowed mode.");
+            }
+
+            ImGui.InputFloat2("Window size", ref Settings.WindowSize);
 
             DrawResolutionButtons(ref Settings.CommonResolutions16_9);
-            ImGui.Text("Common window sizes/resolutions (16:9)");
+            ImGui.Text("Common window sizes (16:9)");
             
             DrawResolutionButtons(ref Settings.CommonResolutions4_3);
-            ImGui.Text("Common window sizes/resolutions (4:3)");
+            ImGui.Text("Common window sizes (4:3)");
             ImGui.Spacing();
 
-            if (ImGui.Button("Apply"))
-            {
-                Engine.graphics.PreferredBackBufferWidth = (int)Settings.WindowSize.X;
-                Engine.graphics.PreferredBackBufferHeight = (int)Settings.WindowSize.Y;
-                Engine.graphics.ApplyChanges();
-            }
+            if (ImGui.Button("Apply")) Settings.ApplyWindowSizeChanges();
+
+            if (windowMode != Settings.WindowMode.Windowed) ImGui.EndDisabled();
+
+            ImGui.SeparatorText("Other");
+            ImGui.Checkbox("Pause on focus loss", ref Settings.PauseOnFocusLoss);
         }
 
         private static void DrawResolutionButtons(ref Vector2[] resolutions)
         {
-            for (int i = 0; i < resolutions.Length; i++)
+            foreach (var newResolution in resolutions)
             {
-                Vector2 newResolution = resolutions[i];
                 if (ImGui.Button(newResolution.ToStringX()))
                     Settings.WindowSize = newResolution;
                 ImGui.SameLine();

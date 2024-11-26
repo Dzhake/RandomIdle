@@ -22,7 +22,7 @@ namespace RandomIdle
         {
             choiceNames = Enum.GetNames(enumType);
             Array values = Enum.GetValues(enumType);
-            int[] ints = values as int[];
+            int[]? ints = values as int[];
             choiceValues = ints ?? throw new ArgumentException($"Expected values to be int, got {values.GetType().GetElementType()} instead");
             this.selected = selected;
         }

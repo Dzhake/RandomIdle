@@ -1,5 +1,4 @@
 ﻿using ImGuiNET;
-using System.Numerics;
 
 namespace RandomIdle
 {
@@ -26,8 +25,17 @@ namespace RandomIdle
             ImGui.Begin("Main", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoTitleBar
                                 | ImGuiWindowFlags.NoDecoration);
 
-            SettingsMenu.DrawSettingsMenu();
+            ImGui.BeginTabBar("MainBar", ImGuiTabBarFlags.Reorderable);
 
+            ImGui.BeginTabItem("Water");
+
+            ImGui.EndTabItem();
+
+            ImGui.BeginTabItem("Settings");
+            SettingsMenu.DrawSettingsMenu();
+            ImGui.EndTabItem();
+
+            ImGui.EndTabBar();
             ImGui.End();
         }
     }

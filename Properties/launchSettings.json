@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RandomIdle": {
+      "commandName": "Project",
+      "hotReloadEnabled": false
+    }
+  }
+}

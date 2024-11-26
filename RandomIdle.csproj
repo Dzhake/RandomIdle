@@ -10,17 +10,24 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>embedded</DebugType>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>embedded</DebugType>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="MonoGame.ImGuiNet\**" />
+    <Compile Remove="Nez\**" />
     <EmbeddedResource Remove="MonoGame.ImGuiNet\**" />
+    <EmbeddedResource Remove="Nez\**" />
     <None Remove="MonoGame.ImGuiNet\**" />
+    <None Remove="Nez\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
