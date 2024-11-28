@@ -20,20 +20,25 @@ namespace RandomIdle
 
         public static void DrawMainWindow()
         {
-            ImGui.SetNextWindowSize(Engine.viewport.WorkSize);
-            ImGui.SetNextWindowPos(Engine.viewport.WorkPos);
+            ImGui.SetNextWindowSize(Engine.viewport.WorkSize with { X = Engine.viewport.WorkSize.X * 0.8f });
+            ImGui.SetNextWindowPos(Engine.viewport.WorkPos with { X = Engine.viewport.WorkSize.X * 0.2f });
             ImGui.Begin("Main", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoTitleBar
                                 | ImGuiWindowFlags.NoDecoration);
 
             ImGui.BeginTabBar("MainBar", ImGuiTabBarFlags.Reorderable);
+            ImGui.BeginTabBar("Game");
+            if (ImGui.BeginTabItem("Water"))
+            {
+                WaterMenu.DrawWaterMenu();
+                ImGui.EndTabItem();
+            }
 
-            ImGui.BeginTabItem("Water");
+            if (ImGui.BeginTabItem("Settings"))
+            {
+                SettingsMenu.DrawSettingsMenu();
+                ImGui.EndTabItem();
+            }
 
-            ImGui.EndTabItem();
-
-            ImGui.BeginTabItem("Settings");
-            SettingsMenu.DrawSettingsMenu();
-            ImGui.EndTabItem();
 
             ImGui.EndTabBar();
             ImGui.End();

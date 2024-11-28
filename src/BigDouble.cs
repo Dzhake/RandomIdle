@@ -4,9 +4,9 @@ using Random = System.Random;
 
 //https://github.com/Razenpok/BreakInfinity.cs/blob/master/BreakInfinity/BigDouble.cs
 
-namespace BreakInfinity
+namespace RandomIdle
 {
-    public struct BigDouble : IFormattable, IComparable, IComparable<BigDouble>, IEquatable<BigDouble>
+    public struct BigDouble : IComparable, IComparable<BigDouble>, IEquatable<BigDouble>
     {
         public const double Tolerance = 1e-18;
 
@@ -192,17 +192,12 @@ namespace BreakInfinity
 
         public override string ToString()
         {
-            return BigNumber.FormatBigDouble(this, null, null);
+            return BigNumber.FormatBigDouble(this, "C2");
         }
 
         public string ToString(string format)
         {
-            return BigNumber.FormatBigDouble(this, format, null);
-        }
-
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return BigNumber.FormatBigDouble(this, format, formatProvider);
+            return BigNumber.FormatBigDouble(this, format);
         }
 
         public static BigDouble Abs(BigDouble value)
@@ -480,6 +475,11 @@ namespace BreakInfinity
                 ? (Mantissa > 0 ? exponentComparison : -exponentComparison)
                 : Mantissa.CompareTo(other.Mantissa);
         }
+
+        public bool GreaterThan(BigDouble other) => CompareTo(other) == 1;
+        public bool GreaterOrEqual(BigDouble other) => CompareTo(other) != -1;
+        public bool LessThan(BigDouble other) => CompareTo(other) == -1;
+        public bool LessOrEqual(BigDouble other) => CompareTo(other) != 1;
 
         public override bool Equals(object other)
         {
@@ -830,7 +830,7 @@ namespace BreakInfinity
         /// </summary>
         private static class BigNumber
         {
-            public static string FormatBigDouble(BigDouble value, string format, IFormatProvider formatProvider)
+            public static string FormatBigDouble(BigDouble value, string format)
             {
                 if (IsNaN(value)) return "NaN";
                 if (value.Exponent >= ExpLimit)
@@ -838,19 +838,15 @@ namespace BreakInfinity
                     return value.Mantissa > 0 ? "Infinity" : "-Infinity";
                 }
 
-                int formatDigits;
-                var formatSpecifier = ParseFormatSpecifier(format, out formatDigits);
-                switch (formatSpecifier)
+                var formatSpecifier = ParseFormatSpecifier(format, out int formatDigits);
+                return formatSpecifier switch
                 {
-                    case 'R':
-                    case 'G':
-                        return FormatGeneral(value, formatDigits);
-                    case 'E':
-                        return FormatExponential(value, formatDigits);
-                    case 'F':
-                        return FormatFixed(value, formatDigits);
-                }
-                throw new FormatException($"Unknown string format '{formatSpecifier}'");
+                    'R' or 'G' => FormatGeneral(value, formatDigits),
+                    'E' => FormatExponential(value, formatDigits),
+                    'F' => FormatFixed(value, formatDigits),
+                    'C' => FormatCustom(value, formatDigits),
+                    _ => throw new FormatException($"Unknown string format '{formatSpecifier}'")
+                };
             }
 
             private static char ParseFormatSpecifier(string format, out int digits)
@@ -960,6 +956,21 @@ namespace BreakInfinity
                         + (places > 0 ? ".".PadRight(places + 1, '0') : "");
                 }
                 return ToFixed(value.ToDouble(), places);
+            }
+
+            //Custom formatter I wrote myself because I didn't like existing ones :)
+            private static string FormatCustom(BigDouble value, int places)
+            {
+                if (value.Exponent <= -ExpLimit || IsZero(value.Mantissa))
+                {
+                    return "0";
+                }
+
+                return value.Exponent switch
+                {
+                    < 3 => value.ToDouble().ToString("F2"),
+                    _ => $"{value.Mantissa:F2}e{value.Exponent}"
+                };
             }
         }
 

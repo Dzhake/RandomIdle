@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
@@ -22,7 +23,8 @@ namespace RandomIdle
         public static ImGuiViewportPtr viewport;
         public static ImGuiStylePtr style;
 
-        public static TimeSpan DeltaTime;
+        public static TimeSpan DeltaTimeSpan;
+        public static float DeltaTime => DeltaTimeSpan.Milliseconds / 1000f;
         public static TimeSpan TotalTime;
 
 
@@ -30,6 +32,9 @@ namespace RandomIdle
 
         public Engine()
         {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
             Content.RootDirectory = "Content";
             Instance = this;
             IsMouseVisible = true;
@@ -47,11 +52,11 @@ namespace RandomIdle
             io = ImGui.GetIO();
             viewport = ImGui.GetMainViewport();
             style = ImGui.GetStyle();
-
             style.FrameRounding = 3f;
             style.WindowBorderSize = 0f;
 
             ImDrawer.Intialize();
+            Drawer.Initialize(graphics.GraphicsDevice);
 
             base.Initialize();
         }
@@ -63,16 +68,18 @@ namespace RandomIdle
 
         protected override void Update(GameTime gameTime)
         {
-            DeltaTime = gameTime.ElapsedGameTime;
+            if (Settings.PauseOnFocusLoss && !IsActive) return;
+
+            DeltaTimeSpan = gameTime.ElapsedGameTime;
             TotalTime = gameTime.TotalGameTime;
 
-            if (Settings.PauseOnFocusLoss && !IsActive)
-                return;
 
             if (Settings.GetWindowType() == Settings.WindowMode.Maximized)
             {
                 SDL.SDL_MaximizeWindow(SDLWindow);
             }
+
+            WaterMenu.Update();
 
             base.Update(gameTime);
         }
