@@ -1,5 +1,6 @@
 ﻿﻿using System;
-using System.Globalization;
+ using System.Diagnostics.Contracts;
+ using System.Globalization;
 using Random = System.Random;
 
 //https://github.com/Razenpok/BreakInfinity.cs/blob/master/BreakInfinity/BigDouble.cs
@@ -68,6 +69,7 @@ namespace RandomIdle
             }
         }
 
+        [Pure]
         public static BigDouble Normalize(double mantissa, long exponent)
         {
             if (mantissa >= 1 && mantissa < 10 || !IsFinite(mantissa))
@@ -97,6 +99,7 @@ namespace RandomIdle
 
         public long Exponent => exponent;
 
+        [Pure]
         public static BigDouble FromMantissaExponentNoNormalize(double mantissa, long exponent)
         {
             return new BigDouble(mantissa, exponent, new PrivateConstructorArg());
@@ -108,6 +111,7 @@ namespace RandomIdle
 
         public static BigDouble NaN = FromMantissaExponentNoNormalize(double.NaN, long.MinValue);
 
+        [Pure]
         public static bool IsNaN(BigDouble value)
         {
             return double.IsNaN(value.Mantissa);
@@ -115,6 +119,7 @@ namespace RandomIdle
 
         public static BigDouble PositiveInfinity = FromMantissaExponentNoNormalize(double.PositiveInfinity, 0);
 
+        [Pure]
         public static bool IsPositiveInfinity(BigDouble value)
         {
             return double.IsPositiveInfinity(value.Mantissa);
@@ -122,16 +127,19 @@ namespace RandomIdle
 
         public static BigDouble NegativeInfinity = FromMantissaExponentNoNormalize(double.NegativeInfinity, 0);
 
+        [Pure]
         public static bool IsNegativeInfinity(BigDouble value)
         {
             return double.IsNegativeInfinity(value.Mantissa);
         }
 
+        [Pure]
         public static bool IsInfinity(BigDouble value)
         {
             return double.IsInfinity(value.Mantissa);
         }
 
+        [Pure]
         public static BigDouble Parse(string value)
         {
             if (value.IndexOf('e') != -1)
@@ -190,31 +198,37 @@ namespace RandomIdle
             return result;
         }
 
+        [Pure]
         public override string ToString()
         {
             return BigNumber.FormatBigDouble(this, "C2");
         }
 
+        [Pure]
         public string ToString(string format)
         {
             return BigNumber.FormatBigDouble(this, format);
         }
 
+        [Pure]
         public static BigDouble Abs(BigDouble value)
         {
             return FromMantissaExponentNoNormalize(Math.Abs(value.Mantissa), value.Exponent);
         }
 
+        [Pure]
         public static BigDouble Negate(BigDouble value)
         {
             return FromMantissaExponentNoNormalize(-value.Mantissa, value.Exponent);
         }
 
+        [Pure]
         public static int Sign(BigDouble value)
         {
             return Math.Sign(value.Mantissa);
         }
 
+        [Pure]
         public static BigDouble Round(BigDouble value)
         {
             if (IsNaN(value))
@@ -235,6 +249,7 @@ namespace RandomIdle
             return value;
         }
 
+        [Pure]
         public static BigDouble Round(BigDouble value, MidpointRounding mode)
         {
             if (IsNaN(value))
@@ -254,7 +269,8 @@ namespace RandomIdle
 
             return value;
         }
-
+        
+        [Pure]
         public static BigDouble Floor(BigDouble value)
         {
             if (IsNaN(value))
@@ -274,7 +290,8 @@ namespace RandomIdle
 
             return value;
         }
-
+        
+        [Pure]
         public static BigDouble Ceiling(BigDouble value)
         {
             if (IsNaN(value))
@@ -294,7 +311,8 @@ namespace RandomIdle
 
             return value;
         }
-
+        
+        [Pure]
         public static BigDouble Truncate(BigDouble value)
         {
             if (IsNaN(value))
@@ -314,7 +332,8 @@ namespace RandomIdle
 
             return value;
         }
-
+        
+        [Pure]
         public static BigDouble Add(BigDouble left, BigDouble right)
         {
             //figure out which is bigger, shrink the mantissa of the smaller by the difference in exponents, add mantissas, normalize and return
@@ -361,23 +380,27 @@ namespace RandomIdle
                            PowersOf10.Lookup(smaller.Exponent - bigger.Exponent)),
                 bigger.Exponent - 14);
         }
-
+        
+        [Pure]
         public static BigDouble Subtract(BigDouble left, BigDouble right)
         {
             return left + -right;
         }
-
+        
+        [Pure]
         public static BigDouble Multiply(BigDouble left, BigDouble right)
         {
             // 2e3 * 4e5 = (2 * 4)e(3 + 5)
             return Normalize(left.Mantissa * right.Mantissa, left.Exponent + right.Exponent);
         }
-
+        
+        [Pure]
         public static BigDouble Divide(BigDouble left, BigDouble right)
         {
             return left * Reciprocate(right);
         }
-
+        
+        [Pure]
         public static BigDouble Reciprocate(BigDouble value)
         {
             return Normalize(1.0 / value.Mantissa, -value.Exponent);
@@ -437,7 +460,8 @@ namespace RandomIdle
         {
             return value.Subtract(1);
         }
-
+        
+        [Pure]
         public int CompareTo(object other)
         {
             if (other == null)
@@ -450,7 +474,8 @@ namespace RandomIdle
             }
             throw new ArgumentException("The parameter must be a BigDouble.");
         }
-
+        
+        [Pure]
         public int CompareTo(BigDouble other)
         {
             if (
@@ -475,17 +500,23 @@ namespace RandomIdle
                 ? (Mantissa > 0 ? exponentComparison : -exponentComparison)
                 : Mantissa.CompareTo(other.Mantissa);
         }
-
+        
+        [Pure]
         public bool GreaterThan(BigDouble other) => CompareTo(other) == 1;
+        [Pure]
         public bool GreaterOrEqual(BigDouble other) => CompareTo(other) != -1;
+        [Pure]
         public bool LessThan(BigDouble other) => CompareTo(other) == -1;
+        [Pure]
         public bool LessOrEqual(BigDouble other) => CompareTo(other) != 1;
-
+        
+        [Pure]
         public override bool Equals(object other)
         {
             return other is BigDouble && Equals((BigDouble)other);
         }
-
+        
+        [Pure]
         public override int GetHashCode()
         {
             unchecked
@@ -493,7 +524,8 @@ namespace RandomIdle
                 return (Mantissa.GetHashCode() * 397) ^ Exponent.GetHashCode();
             }
         }
-
+        
+        [Pure]
         public bool Equals(BigDouble other)
         {
             return !IsNaN(this) && !IsNaN(other) && (AreSameInfinity(this, other)
@@ -507,12 +539,14 @@ namespace RandomIdle
         /// than (larger number) * 1e-9 will be considered equal.
         /// </para>
         /// </summary>
+        [Pure]
         public bool Equals(BigDouble other, double tolerance)
         {
             return !IsNaN(this) && !IsNaN(other) && (AreSameInfinity(this, other)
                 || Abs(this - other) <= Max(Abs(this), Abs(other)) * tolerance);
         }
-
+        
+        [Pure]
         private static bool AreSameInfinity(BigDouble first, BigDouble second)
         {
             return IsPositiveInfinity(first) && IsPositiveInfinity(second)
@@ -574,7 +608,8 @@ namespace RandomIdle
 
             return !(a < b);
         }
-
+        
+        [Pure]
         public static BigDouble Max(BigDouble left, BigDouble right)
         {
             if (IsNaN(left) || IsNaN(right))
@@ -583,7 +618,8 @@ namespace RandomIdle
             }
             return left > right ? left : right;
         }
-
+        
+        [Pure]
         public static BigDouble Min(BigDouble left, BigDouble right)
         {
             if (IsNaN(left) || IsNaN(right))
@@ -592,22 +628,26 @@ namespace RandomIdle
             }
             return left > right ? right : left;
         }
-
+        
+        [Pure]
         public static double AbsLog10(BigDouble value)
         {
             return value.Exponent + Math.Log10(Math.Abs(value.Mantissa));
         }
-
+        
+        [Pure]
         public static double Log10(BigDouble value)
         {
             return value.Exponent + Math.Log10(value.Mantissa);
         }
-
+        
+        [Pure]
         public static double Log(BigDouble value, BigDouble @base)
         {
             return Log(value, @base.ToDouble());
         }
-
+        
+        [Pure]
         public static double Log(BigDouble value, double @base)
         {
             if (IsZero(@base))
@@ -618,34 +658,40 @@ namespace RandomIdle
             //UN-SAFETY: Most incremental game cases are log(number := 1 or greater, base := 2 or greater). We assume this to be true and thus only need to return a number, not a BigDouble, and don't do any other kind of error checking.
             return 2.30258509299404568402 / Math.Log(@base) * Log10(value);
         }
-
+        
+        [Pure]
         public static double Log2(BigDouble value)
         {
             return 3.32192809488736234787 * Log10(value);
         }
-
+        
+        [Pure]
         public static double Ln(BigDouble value)
         {
             return 2.30258509299404568402 * Log10(value);
         }
-
+        
+        [Pure]
         public static BigDouble Pow10(double power)
         {
             return IsInteger(power)
                 ? Pow10((long) power)
                 : Normalize(Math.Pow(10, power % 1), (long) Math.Truncate(power));
         }
-
+        
+        [Pure]
         public static BigDouble Pow10(long power)
         {
             return FromMantissaExponentNoNormalize(1, power);
         }
-
+        
+        [Pure]
         public static BigDouble Pow(BigDouble value, BigDouble power)
         {
             return Pow(value, power.ToDouble());
         }
-
+        
+        [Pure]
         public static BigDouble Pow(BigDouble value, long power)
         {
             if (Is10(value))
@@ -663,7 +709,8 @@ namespace RandomIdle
 
             return Normalize(mantissa, value.Exponent * power);
         }
-
+        
+        [Pure]
         public static BigDouble Pow(BigDouble value, double power)
         {
             // TODO: power can be greater that long.MaxValue, which can bring troubles in fast track
@@ -674,12 +721,14 @@ namespace RandomIdle
             }
             return Is10(value) && powerIsInteger ? Pow10(power) : PowInternal(value, power);
         }
-
+        
+        [Pure]
         private static bool Is10(BigDouble value)
         {
             return value.Exponent == 1 && value.Mantissa - 1 < double.Epsilon;
         }
-
+        
+        [Pure]
         private static BigDouble PowInternal(BigDouble value, double other)
         {
             //UN-SAFETY: Accuracy not guaranteed beyond ~9~11 decimal places.
@@ -717,7 +766,8 @@ namespace RandomIdle
 
             return result;
         }
-
+        
+        [Pure]
         public static BigDouble Factorial(BigDouble value)
         {
             //Using Stirling's Approximation. https://en.wikipedia.org/wiki/Stirling%27s_approximation#Versions_suitable_for_calculators
@@ -726,12 +776,14 @@ namespace RandomIdle
 
             return Pow(n / 2.71828182845904523536 * Math.Sqrt(n * Math.Sinh(1 / n) + 1 / (810 * Math.Pow(n, 6))), n) * Math.Sqrt(2 * 3.141592653589793238462 / n);
         }
-
+        
+        [Pure]
         public static BigDouble Exp(BigDouble value)
         {
             return Pow(2.71828182845904523536, value);
         }
-
+        
+        [Pure]
         public static BigDouble Sqrt(BigDouble value)
         {
             if (value.Mantissa < 0)
@@ -747,7 +799,8 @@ namespace RandomIdle
 
             return Normalize(Math.Sqrt(value.Mantissa), (long) Math.Floor(value.Exponent / 2.0));
         }
-
+        
+        [Pure]
         public static BigDouble Cbrt(BigDouble value)
         {
             var sign = 1;
@@ -773,53 +826,63 @@ namespace RandomIdle
 
             return Normalize(newmantissa, (long) Math.Floor(value.Exponent / 3.0));
         }
-
+        
+        [Pure]
         public static BigDouble Sinh(BigDouble value)
         {
             return (Exp(value) - Exp(-value)) / 2;
         }
-
+        
+        [Pure]
         public static BigDouble Cosh(BigDouble value)
         {
             return (Exp(value) + Exp(-value)) / 2;
         }
-
+        
+        [Pure]
         public static BigDouble Tanh(BigDouble value)
         {
             return Sinh(value) / Cosh(value);
         }
-
+        
+        [Pure]
         public static double Asinh(BigDouble value)
         {
             return Ln(value + Sqrt(Pow(value, 2) + 1));
         }
-
+        
+        [Pure]
         public static double Acosh(BigDouble value)
         {
             return Ln(value + Sqrt(Pow(value, 2) - 1));
         }
-
+        
+        [Pure]
         public static double Atanh(BigDouble value)
         {
             if (Abs(value) >= 1) return double.NaN;
             return Ln((value + 1) / (One - value)) / 2;
         }
-
+        
+        [Pure]
         private static bool IsZero(double value)
         {
             return Math.Abs(value) < double.Epsilon;
         }
-
+        
+        [Pure]
         private static bool AreEqual(double first, double second)
         {
             return Math.Abs(first - second) < Tolerance;
         }
-
+        
+        [Pure]
         private static bool IsInteger(double value)
         {
             return IsZero(Math.Abs(value % 1));
         }
-
+        
+        [Pure]
         private static bool IsFinite(double value)
         {
             return !double.IsNaN(value) && !double.IsInfinity(value);
@@ -1038,6 +1101,7 @@ namespace RandomIdle
         /// Adapted from Trimps source code.
         /// </para>
         /// </summary>
+        [Pure]
         public static BigDouble AffordGeometricSeries(BigDouble resourcesAvailable, BigDouble priceStart,
             BigDouble priceRatio, BigDouble currentOwned)
         {
@@ -1052,6 +1116,7 @@ namespace RandomIdle
         /// How much resource would it cost to buy (numItems) items if you already have currentOwned,
         /// the initial price is priceStart and it multiplies by priceRatio each purchase?
         /// </summary>
+        [Pure]
         public static BigDouble SumGeometricSeries(BigDouble numItems, BigDouble priceStart, BigDouble priceRatio,
             BigDouble currentOwned)
         {
@@ -1065,6 +1130,7 @@ namespace RandomIdle
         /// additively increasing cost each purchase (start at priceStart, add by priceAdd,
         /// already own currentOwned), how much of it can you buy?
         /// </summary>
+        [Pure]
         public static BigDouble AffordArithmeticSeries(BigDouble resourcesAvailable, BigDouble priceStart,
             BigDouble priceAdd, BigDouble currentOwned)
         {
@@ -1089,6 +1155,7 @@ namespace RandomIdle
         /// Adapted from http://www.mathwords.com/a/arithmetic_series.htm
         /// </para>
         /// </summary>
+        [Pure]
         public static BigDouble SumArithmeticSeries(BigDouble numItems, BigDouble priceStart, BigDouble priceAdd,
             BigDouble currentOwned)
         {
@@ -1106,6 +1173,7 @@ namespace RandomIdle
         /// From Frozen Cookies: http://cookieclicker.wikia.com/wiki/Frozen_Cookies_(JavaScript_Add-on)#Efficiency.3F_What.27s_that.3F
         /// </para>
         /// </summary>
+        [Pure]
         public static BigDouble EfficiencyOfPurchase(BigDouble cost, BigDouble currentRpS, BigDouble deltaRpS)
         {
             return cost / currentRpS + cost / deltaRpS;
@@ -1114,171 +1182,205 @@ namespace RandomIdle
 
     public static class BigDoubleExtensions
     {
+        [Pure]
         public static BigDouble Abs(this BigDouble value)
         {
             return BigDouble.Abs(value);
         }
-
+        
+        [Pure]
         public static BigDouble Negate(this BigDouble value)
         {
             return BigDouble.Negate(value);
         }
-
+        
+        [Pure]
         public static int Sign(this BigDouble value)
         {
             return BigDouble.Sign(value);
         }
-
+        
+        [Pure]
         public static BigDouble Round(this BigDouble value)
         {
             return BigDouble.Round(value);
         }
-
+        
+        [Pure]
         public static BigDouble Floor(this BigDouble value)
         {
             return BigDouble.Floor(value);
         }
-
+        
+        [Pure]
         public static BigDouble Ceiling(this BigDouble value)
         {
             return BigDouble.Ceiling(value);
         }
-
+        
+        [Pure]
         public static BigDouble Truncate(this BigDouble value)
         {
             return BigDouble.Truncate(value);
         }
-
+        
+        [Pure]
         public static BigDouble Add(this BigDouble value, BigDouble other)
         {
             return BigDouble.Add(value, other);
         }
-
+        
+        [Pure]
         public static BigDouble Subtract(this BigDouble value, BigDouble other)
         {
             return BigDouble.Subtract(value, other);
         }
-
+        
+        [Pure]
         public static BigDouble Multiply(this BigDouble value, BigDouble other)
         {
             return BigDouble.Multiply(value, other);
         }
-
+        
+        [Pure]
         public static BigDouble Divide(this BigDouble value, BigDouble other)
         {
             return BigDouble.Divide(value, other);
         }
-
+        
+        [Pure]
         public static BigDouble Reciprocate(this BigDouble value)
         {
             return BigDouble.Reciprocate(value);
         }
-
+        
+        [Pure]
         public static BigDouble Max(this BigDouble value, BigDouble other)
         {
             return BigDouble.Max(value, other);
         }
-
+        
+        [Pure]
         public static BigDouble Min(this BigDouble value, BigDouble other)
         {
             return BigDouble.Min(value, other);
         }
-
+        
+        [Pure]
         public static double AbsLog10(this BigDouble value)
         {
             return BigDouble.AbsLog10(value);
         }
-
+        
+        [Pure]
         public static double Log10(this BigDouble value)
         {
             return BigDouble.Log10(value);
         }
-
+        
+        [Pure]
         public static double Log(BigDouble value, BigDouble @base)
         {
             return BigDouble.Log(value, @base);
         }
-
+        
+        [Pure]
         public static double Log(this BigDouble value, double @base)
         {
             return BigDouble.Log(value, @base);
         }
-
+        
+        [Pure]
         public static double Log2(this BigDouble value)
         {
             return BigDouble.Log2(value);
         }
-
+        
+        [Pure]
         public static double Ln(this BigDouble value)
         {
             return BigDouble.Ln(value);
         }
-
+        
+        [Pure]
         public static BigDouble Exp(this BigDouble value)
         {
             return BigDouble.Exp(value);
         }
-
+        
+        [Pure]
         public static BigDouble Sinh(this BigDouble value)
         {
             return BigDouble.Sinh(value);
         }
-
+        
+        [Pure]
         public static BigDouble Cosh(this BigDouble value)
         {
             return BigDouble.Cosh(value);
         }
-
+        
+        [Pure]
         public static BigDouble Tanh(this BigDouble value)
         {
             return BigDouble.Tanh(value);
         }
-
+        
+        [Pure]
         public static double Asinh(this BigDouble value)
         {
             return BigDouble.Asinh(value);
         }
-
+        
+        [Pure]
         public static double Acosh(this BigDouble value)
         {
             return BigDouble.Acosh(value);
         }
-
+        
+        [Pure]
         public static double Atanh(this BigDouble value)
         {
             return BigDouble.Atanh(value);
         }
-
+        
+        [Pure]
         public static BigDouble Pow(this BigDouble value, BigDouble power)
         {
             return BigDouble.Pow(value, power);
         }
-
+        
+        [Pure]
         public static BigDouble Pow(this BigDouble value, long power)
         {
             return BigDouble.Pow(value, power);
         }
-
+        
+        [Pure]
         public static BigDouble Pow(this BigDouble value, double power)
         {
             return BigDouble.Pow(value, power);
         }
-
+        
+        [Pure]
         public static BigDouble Factorial(this BigDouble value)
         {
             return BigDouble.Factorial(value);
         }
-
+        
+        [Pure]
         public static BigDouble Sqrt(this BigDouble value)
         {
             return BigDouble.Sqrt(value);
         }
-
+        
+        [Pure]
         public static BigDouble Cbrt(this BigDouble value)
         {
             return BigDouble.Cbrt(value);
         }
-
+        
+        [Pure]
         public static BigDouble Sqr(this BigDouble value)
         {
             return BigDouble.Pow(value, 2);

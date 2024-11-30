@@ -1,43 +1,29 @@
 ﻿using ImGuiNET;
+using Microsoft.Xna.Framework;
 
 namespace RandomIdle;
 
-public class WaterGenerator(int level, BigDouble baseProduction, BigDouble baseCost, float costExponentBase)
+public class WaterGenerator : BaseGenerator
+    
 {
+    public WaterGenerator(int level, BigDouble baseProduction, BigDouble baseCost, float costExponentBase)
+        : base(level, baseProduction, baseCost, costExponentBase)
+    {
+        CurrencyName = "Water";
+    }
 
-    public int Level = level;
-    public BigDouble BaseProduction = baseProduction;
-    public BigDouble BaseCost = baseCost;
-    public float CostExponentBase = costExponentBase;
+    public override BigDouble Currency { get => Currencies.Water; set => Currencies.Water = value; }
 
-    public BigDouble CalculateCost() => BaseCost.Multiply(new BigDouble(CostExponentBase).Pow(Level));
-
-    public BigDouble CalculateProduction() => BaseProduction.Multiply(new(Level));
-
-    public void Draw()
+    public override void Draw()
     {
         ImGui.Text($"Level: {Level}, Production: {CalculateProduction()}/s");
-        ImGui.SameLine();
 
-        if (ImGui.Button($"Upgrade: {CalculateCost()} Water")) TryBuy();
+        if (ImGui.Button($"Upgrade: {CalculateCost()} {CurrencyName}")) TryBuy();
+
     }
 
-    public bool TryBuy()
+    public override void Update()
     {
-        if (!Currencies.Water.GreaterOrEqual(CalculateCost())) return false;
-
-        Buy();
-        return true;
-    }
-
-    public void Buy()
-    {
-        Currencies.Water = Currencies.Water.Subtract(CalculateCost());
-        Level++;
-    }
-
-    public void Update()
-    {
-        Currencies.Water = Currencies.Water.Add(CalculateProduction().Multiply(new(Engine.DeltaTime)));
+        Currency = Currency.Add(CalculateProduction().Multiply(new(Engine.DeltaTime)));
     }
 }

@@ -1,6 +1,7 @@
 ﻿//This file is also mostly copypasta from monocle engine
 ﻿using Microsoft.Xna.Framework;
 using System;
+using Vector2 = System.Numerics.Vector2;
 
 namespace RandomIdle
 {

@@ -24,8 +24,9 @@ namespace RandomIdle
         public static ImGuiStylePtr style;
 
         public static TimeSpan DeltaTimeSpan;
-        public static float DeltaTime => DeltaTimeSpan.Milliseconds / 1000f;
-        public static TimeSpan TotalTime;
+        public static TimeSpan TotalTimeSpan;
+        public static float DeltaTime => (float)DeltaTimeSpan.TotalMilliseconds / 1000f;
+        public static float TotalTime => (float)TotalTimeSpan.TotalMilliseconds / 1000f;
 
 
         private static readonly string errorLogPath = AppContext.BaseDirectory + "error.txt";
@@ -53,7 +54,7 @@ namespace RandomIdle
             viewport = ImGui.GetMainViewport();
             style = ImGui.GetStyle();
             style.FrameRounding = 3f;
-            style.WindowBorderSize = 0f;
+            style.WindowBorderSize = 1f;
 
             ImDrawer.Intialize();
             Drawer.Initialize(graphics.GraphicsDevice);
@@ -64,14 +65,19 @@ namespace RandomIdle
         protected override void LoadContent()
         {
             GuiRenderer.RebuildFontAtlas();
+            Shaders.Intialize();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (Settings.PauseOnFocusLoss && !IsActive) return;
+            if (Settings.PauseOnFocusLoss && !IsActive)
+            {
+                DeltaTimeSpan = DeltaTimeSpan.Add(gameTime.ElapsedGameTime);
+                return;
+            }
 
             DeltaTimeSpan = gameTime.ElapsedGameTime;
-            TotalTime = gameTime.TotalGameTime;
+            TotalTimeSpan = gameTime.TotalGameTime;
 
 
             if (Settings.GetWindowType() == Settings.WindowMode.Maximized)
@@ -79,6 +85,7 @@ namespace RandomIdle
                 SDL.SDL_MaximizeWindow(SDLWindow);
             }
 
+            Shaders.Update();
             WaterMenu.Update();
 
             base.Update(gameTime);
@@ -94,9 +101,11 @@ namespace RandomIdle
                 GraphicsDevice.Clear(Color.Black);
                 base.Draw(gameTime);
 
+                ImDrawer.PreDraw();
                 GuiRenderer.BeginLayout(gameTime);
                 ImDrawer.Draw();
                 GuiRenderer.EndLayout();
+                ImDrawer.PostDraw();
             }
             catch (Exception ex)
             {

@@ -1,6 +1,8 @@
 ﻿//This file is mostly copypasta from Monocle engine.﻿
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Vector2 = System.Numerics.Vector2;
 
 namespace RandomIdle
 {
@@ -31,7 +33,7 @@ namespace RandomIdle
         public static void UseDebugPixelTexture()
         {
             Pixel = new Texture2D(Engine.graphics.GraphicsDevice, 1, 1);
-            Pixel.SetData([new Color(1,1,1)]);
+            Pixel.SetData([Color.White]);
         }
 
         public static void Point(Vector2 at, Color color)

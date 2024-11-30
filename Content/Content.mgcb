@@ -1,15 +1,15 @@
-
-#----------------------------- Global Properties ----------------------------#
-
-/outputDir:bin/$(Platform)
-/intermediateDir:obj/$(Platform)
+/outputDir:bin\Debug\net8.0\
+/intermediateDir:obj\Debug\net8.0\
 /platform:DesktopGL
 /config:
 /profile:Reach
-/compress:False
+/compress:false
 
-#-------------------------------- References --------------------------------#
-
-
-#---------------------------------- Content ---------------------------------#
-
+#begin Shaders\Water.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:Importer=EffectImporter
+/processorParam:Processor=EffectProcessor
+/processorParam:DebugMode=Auto
+/processorParam:Defines=
+/build:Shaders\Water.fx
