@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
-using SDL2;
+using SDL3;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RandomIdle
@@ -66,24 +66,14 @@ namespace RandomIdle
         /// <summary>
         /// Changes PreferredBackBuffer sizes and centers game's window in windowed mode
         /// </summary>
-        public static void ApplyWindowSizeChanges()
+        public static unsafe void ApplyWindowSizeChanges()
         {
             Engine.graphics.PreferredBackBufferWidth = (int)WindowSize.X;
             Engine.graphics.PreferredBackBufferHeight = (int)WindowSize.Y;
-            SDL.SDL_GetCurrentDisplayMode(0, out var displayMode);
-            Vector2 windowPos = (new Vector2(displayMode.w, displayMode.h) - WindowSize) / 2;
+            SDL.SDL_DisplayMode* displayMode = (SDL.SDL_DisplayMode*)SDL.SDL_GetCurrentDisplayMode(0);
+            Vector2 windowPos = (new Vector2(displayMode->w, displayMode->h) - WindowSize) / 2;
             Engine.Instance.Window.Position = windowPos.ToPoint();
             Engine.graphics.ApplyChanges();
-        }
-
-        public static void Save()
-        {
-
-        }
-
-        public static void Load()
-        {
-
         }
     }
 }

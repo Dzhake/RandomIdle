@@ -4,8 +4,9 @@ using System.Globalization;
 using System.IO;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended.Input;
 using MonoGame.ImGuiNet;
-using SDL2;
+using SDL3;
 
 namespace RandomIdle
 {
@@ -22,6 +23,9 @@ namespace RandomIdle
         public static ImGuiIOPtr io;
         public static ImGuiViewportPtr viewport;
         public static ImGuiStylePtr style;
+
+        public static KeyboardStateExtended kb;
+        public static MouseStateExtended mouse;
 
         public static TimeSpan DeltaTimeSpan;
         public static TimeSpan TotalTimeSpan;
@@ -75,10 +79,14 @@ namespace RandomIdle
                 DeltaTimeSpan = DeltaTimeSpan.Add(gameTime.ElapsedGameTime);
                 return;
             }
+            
+            KeyboardExtended.Update();
+            MouseExtended.Update();
+            kb = KeyboardExtended.GetState();
+            mouse = MouseExtended.GetState();
 
             DeltaTimeSpan = gameTime.ElapsedGameTime;
             TotalTimeSpan = gameTime.TotalGameTime;
-
 
             if (Settings.GetWindowType() == Settings.WindowMode.Maximized)
             {
@@ -101,7 +109,7 @@ namespace RandomIdle
                 GraphicsDevice.Clear(Color.Black);
                 base.Draw(gameTime);
 
-                ImDrawer.PreDraw();
+                ImPredraw.PreDraw();
                 GuiRenderer.BeginLayout(gameTime);
                 ImDrawer.Draw();
                 GuiRenderer.EndLayout();

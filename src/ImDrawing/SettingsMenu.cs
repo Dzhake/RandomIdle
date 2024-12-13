@@ -1,6 +1,5 @@
 ﻿using ImGuiNET;
 using System.Numerics;
-using SDL2;
 
 namespace RandomIdle
 {
@@ -15,6 +14,7 @@ namespace RandomIdle
 
         public static void DrawSettingsMenu()
         {
+            ImDrawer.CurrentMenuBg = ImDrawer.MenuBg.None;
             ImGui.SeparatorText("Video");
             ImGui.SeparatorText("Window mode");
 

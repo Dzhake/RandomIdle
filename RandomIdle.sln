@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomIdle", "RandomIdle.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monogame.ImGuiNet", "MonoGame.ImGuiNet\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj", "{F593F596-F1AA-4140-BE84-2DE67B4536AA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoPlus", "..\MonoPlus\MonoPlus.csproj", "{A6552DFF-398E-420A-AC71-C6D552AED157}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F593F596-F1AA-4140-BE84-2DE67B4536AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F593F596-F1AA-4140-BE84-2DE67B4536AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F593F596-F1AA-4140-BE84-2DE67B4536AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6552DFF-398E-420A-AC71-C6D552AED157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6552DFF-398E-420A-AC71-C6D552AED157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6552DFF-398E-420A-AC71-C6D552AED157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6552DFF-398E-420A-AC71-C6D552AED157}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
