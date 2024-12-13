@@ -95,6 +95,7 @@ namespace RandomIdle
 
             Shaders.Update();
             WaterMenu.Update();
+            SaveData.Update();
 
             base.Update(gameTime);
         }
@@ -113,7 +114,6 @@ namespace RandomIdle
                 GuiRenderer.BeginLayout(gameTime);
                 ImDrawer.Draw();
                 GuiRenderer.EndLayout();
-                ImDrawer.PostDraw();
             }
             catch (Exception ex)
             {

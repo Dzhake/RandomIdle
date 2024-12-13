@@ -11,7 +11,8 @@ public static class WaterMenu
         new(10, 1e3, 1.1f),
         new(50, 1e5, 1.1f),
         new(1e3, 1e5, 1.3f),
-        new(1e3, 1e7, 1.01f)
+        new(1e3, 1e7, 1.01f),
+        new(1e5,1e9, 1.5f)
     ];
 
     public static BigDouble WaterGain;
@@ -19,9 +20,6 @@ public static class WaterMenu
     public static void DrawWaterMenu()
     {
         ImDrawer.CurrentMenuBg = ImDrawer.MenuBg.Water;
-        ImGui.PushStyleColor(ImGuiCol.Button, Colors.Blue);
-        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Colors.LightBlue);
-        ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.LigherBlue);
 
         ImGui.TextWrapped("Smaller rivers flow into bigger rivers, increasing their production.");
         ImGui.Separator();
@@ -34,8 +32,6 @@ public static class WaterMenu
             ImGui.PopID();
             if (generator.Amount <= 0) break;
         }
-
-        ImGui.PopStyleColor(3);
     }
 
     public static void Update()
@@ -52,7 +48,7 @@ public static class WaterMenu
             if (Engine.kb.IsKeyDown(InputHelper.NumberKeys[i]))
             {
                 if (Engine.kb.IsShiftDown())
-                    generator.Buy();
+                    generator.TryBuy();
                 else
                     generator.BuyMax();
             }

@@ -34,36 +34,54 @@ namespace RandomIdle
 
             ImGui.BeginTabBar("MainBar", ImGuiTabBarFlags.Reorderable);
 
+            Colors.PushNeutralColors();
             if (ImGui.BeginTabItem("Game"))
             {
-                ImGui.BeginTabBar("Game");
-
-                if (ImGui.BeginTabItem("Water"))
-                {
-                    WaterMenu.DrawWaterMenu();
-                    ImGui.EndTabItem();
-                }
-
-                if (SaveData.AirMenuUnlocked && ImGui.BeginTabItem("Air"))
-                {
-                    ImGui.Text(":3");
-                    ImGui.EndTabItem();
-                }
-
-                ImGui.EndTabBar();
+                DrawGameBar();
                 ImGui.EndTabItem();
             }
+            Colors.PopColors();
             
+            Colors.PushNeutralColors();
             if (ImGui.BeginTabItem("Settings"))
             {
                 SettingsMenu.DrawSettingsMenu();
                 ImGui.EndTabItem();
             }
 
+            if (ImGui.BeginTabItem("About"))
+            {
+                AboutMenu.DrawAboutMenu();
+                ImGui.EndTabItem();
+            }
+            Colors.PopColors();
+
             ImGui.EndTabBar();
             ImGui.End();
             ImGui.PopStyleColor();
         }
+
+        private static void DrawGameBar()
+        {
+            ImGui.BeginTabBar("Game");
+
+            Colors.PushWaterColors();
+            if (ImGui.BeginTabItem("Water"))
+            {
+                WaterMenu.DrawWaterMenu();
+                ImGui.EndTabItem();
+            }
+            Colors.PopColors();
+
+            if (SaveData.AirMenuUnlocked && ImGui.BeginTabItem("Air"))
+            {
+                ImGui.Text(":3");
+                ImGui.EndTabItem();
+            }
+
+            ImGui.EndTabBar();
+        }
+
 
         public static void DrawCurrenciesWindow()
         {
@@ -72,16 +90,11 @@ namespace RandomIdle
             ImGui.Begin("Currencies", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoTitleBar
                                 | ImGuiWindowFlags.NoDecoration);
 
-            ImGui.PushStyleColor(ImGuiCol.Text, Colors.LigherBlue);
+            ImGui.PushStyleColor(ImGuiCol.Text, Colors.LighterBlue);
             ImGui.TextWrapped($"Water: {SaveData.Water}; {WaterMenu.WaterGain}/s");
             ImGui.PopStyleColor();
 
             ImGui.End();
-        }
-
-        public static void PostDraw()
-        {
-
         }
     }
 
