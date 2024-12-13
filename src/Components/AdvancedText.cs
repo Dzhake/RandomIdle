@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Numerics;
+using System.Text;
 using ImGuiNET;
 
 namespace RandomIdle;
@@ -16,15 +16,13 @@ public static class AdvancedText
     public static void Draw(string text)
     {
         int i = 0;
-        string subtext = "";
+        StringBuilder subtext = new();
         Vector4 currentColor = Vector4.One;
-        bool inBracket = false;
         bool drew = false;
 
         while (i < text.Length)
         {
             char symbol = text[i];
-            bool addSymbol = true;
             switch (symbol)
             {
                 case '{':
@@ -32,33 +30,29 @@ public static class AdvancedText
                     if (drew) ImGui.SameLine(0, 0);
 
                     else if (currentColor == Vector4.One)
-                        ImGui.Text(subtext);
+                        ImGui.Text(subtext.ToString());
                     else
-                        ImGui.TextColored(currentColor, subtext);
+                        ImGui.TextColored(currentColor, subtext.ToString());
                     drew = true;
-                    subtext = "";
-                    inBracket = true;
-                    addSymbol = false;
+                    subtext.Clear();
                     break;
                 }
                 case '}':
-                    if (!inBracket) throw new ArgumentException("Bracket was closed without opening!", nameof(text));
-
-                    if (subtext == "#")
+                    if (subtext.ToString() == "#")
                         currentColor = Vector4.One;
-                    else if (subtext.StartsWith('#'))
-                        currentColor = Colors.ParseHex(subtext);
+                    else if (subtext.ToString().StartsWith('#'))
+                        currentColor = Colors.ParseHex(subtext.ToString());
 
-                    subtext = "";
-                    addSymbol = false;
+                    subtext.Clear();
+                    break;
+                default:
+                    subtext.Append(symbol);
                     break;
             }
-
-            if (addSymbol) subtext += symbol;
             i++;
         }
 
         if (drew) ImGui.SameLine(0, 0);
-        ImGui.TextColored(currentColor, subtext);
+        ImGui.TextColored(currentColor, subtext.ToString());
     }
 }

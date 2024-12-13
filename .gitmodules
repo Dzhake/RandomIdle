@@ -3,7 +3,4 @@
 	url = https://github.com/tsMezotic/MonoGame.ImGuiNet.git
 [submodule "SDL3-CS"]
 	path = SDL3-CS
-	url = ./SDL3-CS
-[submodule "Monogame.ImGuiNet"]
-	path = Monogame.ImGuiNet
-	url = ./Monogame.ImGuiNet
+	url = https://github.com/flibitijibibo/SDL3-CS/
